@@ -19,6 +19,21 @@ fname[12]='testrange.gnmap'
 fname[13]='evidencecapture.zip'
 fname[14]='baddata.sql'
 fname[15]='databackup.zip'
+fname[16]='usertesting.png'
+fname[17]='budgetreduction.doc'
+fname[18]='travelauthorization.pdf'
+fname[19]='MeetingMinutes.doc'
+fname[20]='SecurityAwarenessTraining.pdf'
+fname[21]='PartialInventory.xls'
+fname[22]='Biography.doc'
+fname[23]='RedTeamTraining.pdf'
+fname[24]='Timesheet.xls'
+fname[25]='TrainingReceipt.pdf'
+fname[26]='ProfessionalDevelopmentForm.doc'
+fname[27]='ERDiagram.jpg'
+fname[28]='FedRampWriteup.doc'
+fname[29]='ReportingMatrix.doc'
+fname[30]='QuarterlyChecklist.xls'
 
 # Array of the original files which are copied
 base[0]='1meg'
@@ -32,7 +47,7 @@ do
     while [ $counter -lt $numfiles ]
     do
         origfile=`shuf -i 0-2 -n 1`
-        newfilename=`shuf -i 0-15 -n 1`
+        newfilename=`shuf -i 0-30 -n 1`
         cp ${base[origfile]} $folders/${fname[newfilename]}
         ((counter++))
     done

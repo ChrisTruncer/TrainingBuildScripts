@@ -4,44 +4,53 @@
 import os
 import re
 import socket
+import time
 
-network = '192.168.1.102'
+network = '10.250.250.250'
 port = 6667
 
-ids_to_trigger = [1116]
-for id in ids_to_trigger:
-	os.system('wevtutil qe System "/q:*[System [(EventID=' + str(id) +')]]" /f:text > mselog.txt' )
+while 1:
 
-os.system('ipconfig > ipconfig.txt')
+	ids_to_trigger = [1116]
+	for id in ids_to_trigger:
+		os.system('wevtutil qe System "/q:*[System [(EventID=' + str(id) +')]]" /f:text > mselog.txt' )
 
-file1 = open('ipconfig.txt','r')
-file2 = open('ip.txt', 'w')
+	os.system('ipconfig > ipconfig.txt')
 
-for line in file1:
-	if re.search('IPv4 Address', line):
-		line = line.split(" ")[16]
-		file2.write(line)
+	file1 = open('ipconfig.txt','r')
+	file2 = open('ip.txt', 'w')
 
-filesize = os.lstat("mselog.txt")[6]
+	for line in file1:
+		if re.search('IPv4 Address', line):
+			line = line.split(" ")[16]
+			file2.write(line)
 
-file1.close()
-file2.close()
+	filesize = os.lstat("mselog.txt")[6]
 
-if filesize == 0:
-	print "It's empty"
-else:
-	file3 = open('ip.txt', 'r')
-	for row in file3:
-		irc = socket.socket ( socket.AF_INET, socket.SOCK_STREAM )
-		irc.connect ( ( network, port ) )
-		irc.recv ( 4096 )
-		irc.send ( 'NICK mse\r\n' )
-		irc.send ( 'USER mse completely real :Jxxx\r\n' )
-		irc.send ( 'JOIN #test\r\n' )
-		irc.send ( 'PRIVMSG #test :investigate ' + row + '\r\n' )
-		irc.send ( 'QUIT :Testing message\r\n' )
-		irc.close()
-	print "detected something"
+	file1.close()
+	file2.close()
 
-os.system('del mselog.txt')
-print 'Done!'
+	if filesize == 0:
+		time.sleep(1)
+	else:
+		file3 = open('ip.txt', 'r')
+		for row in file3:
+			line = line.replace('\n','')
+			irc = socket.socket ( socket.AF_INET, socket.SOCK_STREAM )
+			irc.connect ( ( network, port ) )
+			irc.send ( 'NICK mse1\r\n' )
+			data = irc.recv ( 4096 )
+			data = data.split(":")[1]
+			irc.send ( 'PONG ' + data + '\r\n' )
+			irc.send ( 'USER mse1 completely real :Jxxx\r\n' )
+			irc.send ( 'JOIN #arttreport\r\n' )
+			irc.send ( 'PRIVMSG #arttreport :Investigate ' + row + ' on me!\r\n' )
+			irc.send ( 'QUIT :Testing message\r\n' )
+			irc.close()
+
+		file3.close()
+	os.system('del ipconfig.txt')
+	os.system('del mselog.txt')
+	os.system('del ip.txt')
+	os.system('wevtutil CL System')
+	time.sleep(300)
